@@ -2,79 +2,48 @@
 #include "binary_trees.h"
 
 /**
- * heapify_up - maintain max heap property
- * @node: inserted node
- */
-void heapify_up(heap_t *node)
-{
-	int tmp;
-
-	while (node->parent && node->n > node->parent->n)
-	{
-		tmp = node->n;
-		node->n = node->parent->n;
-		node->parent->n = tmp;
-		node = node->parent;
-	}
-}
-
-/**
- * heap_insert - inserts a value in a Max Binary Heap
- * @root: double pointer to root
- * @value: value to insert
- * Return: pointer to inserted node
- */
+* heap_insert - inserts a value in a Max Binary Heap
+* @root: pointer to the root of the heap
+* @value: value to insert
+*
+* Return: pointer to the inserted node
+*/
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *node, *parent;
-	heap_t **queue;
-	int front = 0, rear = 0;
+	heap_t *new, *parent, *queue[1024];
+	int front = 0, back = 0, tmp;
 
 	if (!root)
 		return (NULL);
-
-	node = binary_tree_node(NULL, value);
-	if (!node)
-		return (NULL);
-
-	if (!*root)
+	if (*root == NULL)
 	{
-		*root = node;
-		return (node);
+		*root = binary_tree_node(NULL, value);
+		return (*root);
 	}
-
-	queue = malloc(sizeof(heap_t *) * 1024);
-	if (!queue)
-		return (NULL);
-
-	queue[rear++] = *root;
-
-	while (front < rear)
+	queue[back++] = *root;
+	while (front < back)
 	{
 		parent = queue[front++];
 
-		if (!parent->left)
-		{
-			parent->left = node;
-			node->parent = parent;
+		if (!parent->left || !parent->right)
 			break;
-		}
-		else
-			queue[rear++] = parent->left;
 
-		if (!parent->right)
-		{
-			parent->right = node;
-			node->parent = parent;
-			break;
-		}
-		else
-			queue[rear++] = parent->right;
+		queue[back++] = parent->left;
+		queue[back++] = parent->right;
 	}
-
-	free(queue);
-
-	heapify_up(node);
-
-	return (node);
+	new = binary_tree_node(parent, value);
+	if (!new)
+		return (NULL);
+	if (!parent->left)
+		parent->left = new;
+	else
+		parent->right = new;
+	while (new->parent && new->n > new->parent->n)
+	{
+		tmp = new->n;
+		new->n = new->parent->n;
+		new->parent->n = tmp;
+		new = new->parent;
+	}
+	return (new);
 }
