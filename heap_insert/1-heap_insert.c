@@ -2,8 +2,8 @@
 #include "binary_trees.h"
 
 /**
- * heapify_up - remonte le noeud pour respecter la propriété du max heap
- * @node: noeud inséré
+ * heapify_up - maintain max heap property
+ * @node: inserted node
  */
 void heapify_up(heap_t *node)
 {
@@ -19,60 +19,16 @@ void heapify_up(heap_t *node)
 }
 
 /**
- * tree_size - retourne le nombre de noeuds
- * @tree: racine
- * Return: taille
- */
-size_t tree_size(const binary_tree_t *tree)
-{
-	if (!tree)
-		return (0);
-
-	return (1 + tree_size(tree->left) + tree_size(tree->right));
-}
-
-/**
- * insert_level - insère au bon endroit pour garder l'arbre complet
- * @root: racine
- * @node: noeud à insérer
- * @index: position
- * @size: taille
- * Return: noeud inséré
- */
-heap_t *insert_level(heap_t *root, heap_t *node, size_t index, size_t size)
-{
-	if (index >= size)
-	{
-		if (!root->left)
-		{
-			root->left = node;
-			node->parent = root;
-			return (node);
-		}
-		else
-		{
-			root->right = node;
-			node->parent = root;
-			return (node);
-		}
-	}
-
-	if (insert_level(root->left, node, index * 2 + 1, size))
-		return (node);
-
-	return (insert_level(root->right, node, index * 2 + 2, size));
-}
-
-/**
- * heap_insert - insère dans un max heap
- * @root: racine du heap
- * @value: valeur
- * Return: noeud inséré
+ * heap_insert - inserts a value in a Max Binary Heap
+ * @root: double pointer to root
+ * @value: value to insert
+ * Return: pointer to inserted node
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	heap_t *node;
-	size_t size;
+	heap_t *node, *parent;
+	heap_t **queue;
+	int front = 0, rear = 0;
 
 	if (!root)
 		return (NULL);
@@ -87,8 +43,36 @@ heap_t *heap_insert(heap_t **root, int value)
 		return (node);
 	}
 
-	size = tree_size(*root);
-	insert_level(*root, node, 0, size);
+	queue = malloc(sizeof(heap_t *) * 1024);
+	if (!queue)
+		return (NULL);
+
+	queue[rear++] = *root;
+
+	while (front < rear)
+	{
+		parent = queue[front++];
+
+		if (!parent->left)
+		{
+			parent->left = node;
+			node->parent = parent;
+			break;
+		}
+		else
+			queue[rear++] = parent->left;
+
+		if (!parent->right)
+		{
+			parent->right = node;
+			node->parent = parent;
+			break;
+		}
+		else
+			queue[rear++] = parent->right;
+	}
+
+	free(queue);
 
 	heapify_up(node);
 
