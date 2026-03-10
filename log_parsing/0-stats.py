@@ -1,48 +1,49 @@
 #!/usr/bin/python3
 """
-Reads stdin line by line and computes metrics
+script that reads stdin line by line and computes metrics.
 """
 
 import sys
 
+VALID_CODES = ["200", "301", "400", "401", "403", "404", "405", "500"]
+
+
 def print_stats(total_size, status_counts):
-    """Print the file size and status code counts"""
+    """print all the stats"""
     print("File size: {}".format(total_size))
     for code in sorted(status_counts.keys()):
-        print("{}: {}".format(code, status_counts[code]))
+        if status_counts[code] > 0:
+            print("{}: {}".format(code, status_counts[code]))
 
-if __name__ == "__main__":
+
+def main():
     total_size = 0
-    status_counts = {}
     line_count = 0
-    valid_codes = [200, 301, 400, 401, 403, 404, 405, 500]
+    status_counts = {code: 0 for code in VALID_CODES}
 
     try:
         for line in sys.stdin:
-            line_count += 1
             parts = line.split()
-            # Check if the line has at least 9 parts (basic format)
-            if len(parts) < 9:
+            if len(parts) < 7:
                 continue
-            # Last two items should be status code and file size
+
+            status = parts[-2]
+            size = parts[-1]
+            if status in VALID_CODES:
+                status_counts[status] += 1
             try:
-                status = int(parts[-2])
-                size = int(parts[-1])
+                total_size += int(size)
             except ValueError:
-                continue
+                pass
 
-            # Only count known status codes
-            if status in valid_codes:
-                status_counts[status] = status_counts.get(status, 0) + 1
-
-            total_size += size
-
+            line_count += 1
             if line_count % 10 == 0:
                 print_stats(total_size, status_counts)
 
     except KeyboardInterrupt:
         pass
-    finally:
-        if line_count % 10 != 0:
-            print_stats(total_size, status_counts)
-            
+    print_stats(total_size, status_counts)
+
+
+if __name__ == "__main__":
+    main()
