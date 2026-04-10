@@ -1,68 +1,73 @@
-#include <stdlib.h>
 #include "binary_trees.h"
 
 /**
- * create_node - crée un noeud AVL
- * @parent: parent du noeud
- * @value: valeur du noeud
+ * create_node - create a node
  *
- * Return: pointeur vers le noeud
+ * @value: Value to put
+ *
+ * Return: the node on success, NULL on failure
  */
-avl_t *create_node(avl_t *parent, int value)
+avl_t *create_node(int value)
 {
-    avl_t *node = malloc(sizeof(avl_t));
+	avl_t *node = malloc(sizeof(avl_t));
 
-    if (!node)
-        return (NULL);
+	if (!node)
+		return (NULL);
 
-    node->n = value;
-    node->parent = parent;
-    node->left = NULL;
-    node->right = NULL;
+	node->n = value;
+	node->left = NULL;
+	node->right = NULL;
+	node->parent = NULL;
 
-    return (node);
+	return (node);
 }
 
 /**
- * build_avl - construit récursivement l'arbre
- * @array: tableau
- * @start: début
- * @end: fin
- * @parent: parent du noeud
+ * build_avl - build the AVL
  *
- * Return: racine du sous-arbre
+ * @array: The array to be transform
+ * @start: start of the array to AVL
+ * @end: end of the array to AVL$
+ *
+ * Return: the head on success, NULL on failure
  */
-avl_t *build_avl(int *array, int start, int end, avl_t *parent)
+static avl_t *build_avl(int *array, int start, int end)
 {
-    int mid;
-    avl_t *root;
+	int mid;
+	avl_t *root;
 
-    if (start > end)
-        return (NULL);
+	if (start > end)
+		return (NULL);
 
-    mid = (start + end) / 2;
+	mid = (start + end) / 2;
 
-    root = create_node(parent, array[mid]);
-    if (!root)
-        return (NULL);
+	root = create_node(array[mid]);
+	if (!root)
+		return (NULL);
 
-    root->left = build_avl(array, start, mid - 1, root);
-    root->right = build_avl(array, mid + 1, end, root);
+	root->left = build_avl(array, start, mid - 1);
+	if (root->left)
+		root->left->parent = root;
 
-    return (root);
+	root->right = build_avl(array, mid + 1, end);
+	if (root->right)
+		root->right->parent = root;
+
+	return (root);
 }
 
 /**
- * sorted_array_to_avl - construit un AVL depuis un tableau trié
- * @array: tableau trié
- * @size: taille
+ * sorted_array_to_avl - Sorted an array into an AVL
  *
- * Return: racine de l'AVL
+ * @array: The array to be Sorted
+ * @size: Size of the array
+ *
+ * Return: the head on success, NULL on failure
  */
 avl_t *sorted_array_to_avl(int *array, size_t size)
 {
-    if (!array || size == 0)
-        return (NULL);
+	if (!array || size == 0)
+		return (NULL);
 
-    return (build_avl(array, 0, size - 1, NULL));
+	return (build_avl(array, 0, size - 1));
 }
