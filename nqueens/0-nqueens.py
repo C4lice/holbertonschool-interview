@@ -2,43 +2,41 @@
 import sys
 
 
-def is_safe(queens, row, col):
-	"""Check if a queen can be placed at (row, col)"""
-	for r, c in queens:
-		if c == col or abs(r - row) == abs(c - col):
-			return False
-	return True
+def is_valid(positions, row, col):
+    for qx, qy in positions:
+        if qy == col:
+            return False
+        if abs(qx - row) == abs(qy - col):
+            return False
+    return True
 
 
-def solve(n, row, queens):
-	"""Backtracking solver"""
-	if row == n:
-		print(queens)
-		return
+def backtrack(row, positions, N):
+    if row == N:
+        print(positions)
+        return
 
-	for col in range(n):
-		if is_safe(queens, row, col):
-			solve(n, row + 1, queens + [[row, col]])
+    for col in range(N):
+        if is_valid(positions, row, col):
+            positions.append([row, col])
+            backtrack(row + 1, positions, N)
+            positions.pop()
 
 
 def main():
-	"""Main function"""
-	if len(sys.argv) != 2:
-		print("Usage: nqueens N")
-		sys.exit(1)
-
-	try:
-		n = int(sys.argv[1])
-	except ValueError:
-		print("N must be a number")
-		sys.exit(1)
-
-	if n < 4:
-		print("N must be at least 4")
-		sys.exit(1)
-
-	solve(n, 0, [])
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        exit(1)
+    try:
+        N = int(sys.argv[1])
+    except ValueError:
+        print("N must be a number")
+        exit(1)
+    if N < 4:
+        print("N must be at least 4")
+        exit(1)
+    backtrack(0, [], N)
 
 
 if __name__ == "__main__":
-	main()
+    main()
