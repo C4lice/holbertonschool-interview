@@ -3,7 +3,11 @@
 #include "menger.h"
 
 /**
- * is_hole - vérifie si une position doit être vide
+ * is_hole - check if a position should be empty
+ * @x: row index
+ * @y: column index
+ *
+ * Return: 1 if position is a hole, 0 otherwise
  */
 int is_hole(int x, int y)
 {
@@ -18,7 +22,10 @@ int is_hole(int x, int y)
 }
 
 /**
- * menger - dessine le sponge
+ * menger - draws a 2D Menger Sponge
+ * @level: level of the sponge
+ *
+ * Return: nothing
  */
 void menger(int level)
 {
