@@ -38,8 +38,15 @@ skiplist_t *linear_skip(skiplist_t *list, int value)
 		printf("Value found between indexes [%lu] and [%lu]\n",
 			prev->index, express->express->index);
 	else
+	{
+		skiplist_t *tail;
+ 
+		tail = express;
+		while (tail->next != NULL)
+			tail = tail->next;
 		printf("Value found between indexes [%lu] and [%lu]\n",
-			prev->index, express->index);
+			prev->index, tail->index);
+	}
  
 	/* ETAPE 2 : chercher pas a pas dans l'intervalle */
 	while (prev != NULL)
