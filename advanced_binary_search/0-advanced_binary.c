@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "search_algos.h"
 
-
 /**
  * print_array - Prints an array of integers
  *
@@ -26,12 +25,14 @@ void print_array(const int *array, size_t size)
 	printf("\n");
 }
 
-/** recursive - Recursive function to perform the advanced binary search
- * @array: The array to be searched
- * @left: The left index of the current search range
- * @right: The right index of the current search range
- * @value: The value to search for
- * Return: The index of the first occurrence of @value in @array, or -1 if not found
+/**
+ * recursive - Recursive helper for advanced_binary
+ * @array: Pointer to the first element of the subarray
+ * @left: Left (start) index relative to the original array
+ * @right: Right (start) index relative to the original array
+ * @value: Value to search for
+ *
+ * Return: Index of the first occurrence of value, or -1 if not found
  */
 int recursive(int *array, int left, int right, int value)
 {
@@ -58,12 +59,14 @@ int recursive(int *array, int left, int right, int value)
 	return (recursive(array, left, mid, value));
 }
 
-/** advanced_binary - Searches for a value in a sorted array of integers using
- * the Advanced Binary search algorithm
- * @array: The array to be searched
- * @size: The number of elements in @array
- * @value: The value to search for
- * Return: The index of the first occurrence of @value in @array, or -1 if not found
+/**
+ * advanced_binary - Searches for a value in a sorted array of integers
+ *                   and returns the index of the FIRST occurrence
+ * @array: Pointer to the first element of the array to search in
+ * @size: Number of elements in array
+ * @value: Value to search for
+ *
+ * Return: Index of the first occurrence of value, or -1 if not found
  */
 int advanced_binary(int *array, size_t size, int value)
 {
