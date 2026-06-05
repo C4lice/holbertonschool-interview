@@ -36,6 +36,48 @@ static int str_len(char *str)
 }
 
 /**
+ * multiply - Multiplies two number strings into a result array
+ * @n1: first number string
+ * @n2: second number string
+ * @result: array to store the result digits
+ * @len1: length of n1
+ * @len2: length of n2
+ */
+static void multiply(char *n1, char *n2, int *result, int len1, int len2)
+{
+	int i, j, prod;
+
+	for (i = len1 - 1; i >= 0; i--)
+	{
+		for (j = len2 - 1; j >= 0; j--)
+		{
+			prod = (n1[i] - '0') * (n2[j] - '0');
+			prod += result[i + j + 1];
+			result[i + j + 1] = prod % 10;
+			result[i + j] += prod / 10;
+		}
+	}
+}
+
+/**
+ * print_result - Prints the result array skipping leading zeros
+ * @result: array of digits
+ * @total: total size of the array
+ */
+static void print_result(int *result, int total)
+{
+	int i;
+	int start;
+
+	start = 0;
+	while (start < total - 1 && result[start] == 0)
+		start++;
+	for (i = start; i < total; i++)
+		_putchar('0' + result[i]);
+	_putchar('\n');
+}
+
+/**
  * main - Entry point, multiplies two large positive numbers
  * @argc: argument count
  * @argv: argument vector
@@ -44,10 +86,8 @@ static int str_len(char *str)
  */
 int main(int argc, char *argv[])
 {
-	int len1, len2, i, j, prod;
+	int len1, len2, total;
 	int *result;
-	int total;
-	int start;
 
 	if (argc != 3)
 	{
@@ -68,23 +108,8 @@ int main(int argc, char *argv[])
 		printf("Error\n");
 		return (98);
 	}
-	for (i = len1 - 1; i >= 0; i--)
-	{
-		for (j = len2 - 1; j >= 0; j--)
-		{
-			prod = (argv[1][i] - '0') * (argv[2][j] - '0');
-			prod += result[i + j + 1];
-			result[i + j + 1] = prod % 10;
-			result[i + j] += prod / 10;
-		}
-	}
-	start = 0;
-	while (start < total - 1 && result[start] == 0)
-		start++;
-	for (i = start; i < total; i++)
-		_putchar('0' + result[i]);
-	_putchar('\n');
+	multiply(argv[1], argv[2], result, len1, len2);
+	print_result(result, total);
 	free(result);
 	return (0);
 }
-
