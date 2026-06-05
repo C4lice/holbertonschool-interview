@@ -26,7 +26,13 @@ void print_array(const int *array, size_t size)
 	printf("\n");
 }
 
-
+/** recursive - Recursive function to perform the advanced binary search
+ * @array: The array to be searched
+ * @left: The left index of the current search range
+ * @right: The right index of the current search range
+ * @value: The value to search for
+ * Return: The index of the first occurrence of @value in @array, or -1 if not found
+ */
 int recursive(int *array, int left, int right, int value)
 {
 	int mid;
@@ -52,7 +58,13 @@ int recursive(int *array, int left, int right, int value)
 	return (recursive(array, left, mid, value));
 }
 
-
+/** advanced_binary - Searches for a value in a sorted array of integers using
+ * the Advanced Binary search algorithm
+ * @array: The array to be searched
+ * @size: The number of elements in @array
+ * @value: The value to search for
+ * Return: The index of the first occurrence of @value in @array, or -1 if not found
+ */
 int advanced_binary(int *array, size_t size, int value)
 {
 	if (array == NULL)
